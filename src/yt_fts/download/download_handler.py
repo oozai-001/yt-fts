@@ -290,10 +290,10 @@ class DownloadHandler:
             file_name = Path(d['filename']).name
             console.print(f" -> \"{file_name}\"")
 
-    def get_vtt(self, tmp_dir: str, video_url: str, language: str) -> None:
+    def get_vtt(self, tmp_dir: str, video_url: str, language: str = 'en') -> None:
         max_retries = 3
         retry_delay = 2  # seconds
-        
+
         for attempt in range(max_retries):
             try:
                 ydl_opts = {
@@ -305,18 +305,19 @@ class DownloadHandler:
                     'writeautomaticsub': True,
                     'subtitlesformat': 'vtt',
                     'skip_download': True,
-                    'subtitleslangs': ['en', '-live_chat'],  # Only English, prefer auto-generated
+                    'subtitleslangs': [language, '-live_chat'],  # Only English, prefer auto-generated
                     'quiet': True,
                     'no_warnings': True,
                     'progress_hooks': [self.quiet_progress_hook],
                     'nocheckcertificate': True,
                     'ignoreerrors': False,
                     'no_color': True,
-                    'sleep_interval': 1,
-                    'max_sleep_interval': 5,
-                    'retries': 3,
                     'fragment_retries': 3,
                     'skip_unavailable_fragments': True,
+                    'sleep_interval': 1,
+                    'max_sleep_interval': 5,
+                    'sleep_interval_subtitles': 1
+                    'retries': 3,
                 }
 
                 if self.cookies_from_browser is not None:
