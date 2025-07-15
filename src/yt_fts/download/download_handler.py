@@ -1,4 +1,3 @@
-
 import os
 import sys
 import json
@@ -33,13 +32,14 @@ from rich.console import Console
 
 
 class DownloadHandler:
-    def __init__(self, number_of_jobs: int = 8, language: str = 'en', cookies_from_browser: str | None = None) -> None:
+    def __init__(self, number_of_jobs: int = 8, language: str = 'en', cookies_from_browser: str | None = None, proxy: str | None = None) -> None:
 
         self.console = Console()
 
         self.cookies_from_browser = cookies_from_browser
         self.number_of_jobs = number_of_jobs
         self.language = language
+        self.proxy = proxy
 
         self.session: requests.Session | None = None
         self.channel_id: str | None = None
@@ -155,6 +155,8 @@ class DownloadHandler:
 
     def init_session(self, url: str) -> requests.Session:
         s = requests.session()
+        if self.proxy:
+            s.proxies = {"http": self.proxy, "https": self.proxy}
         handle_reject_consent_cookie(url, s)
         return s
 
@@ -207,6 +209,7 @@ class DownloadHandler:
                 'sleep_interval': 1,
                 'max_sleep_interval': 3,
                 'retries': 3,
+                'proxy': self.proxy if self.proxy else None,
             }
 
             if self.cookies_from_browser is not None:
@@ -255,6 +258,7 @@ class DownloadHandler:
                 },
                 'quiet': True,
                 'extract_flat': True,
+                'proxy': self.proxy if self.proxy else None,
             }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -318,6 +322,7 @@ class DownloadHandler:
                     'max_sleep_interval': 5,
                     'sleep_interval_subtitles': 1
                     'retries': 3,
+                    'proxy': self.proxy if self.proxy else None,
                 }
 
                 if self.cookies_from_browser is not None:

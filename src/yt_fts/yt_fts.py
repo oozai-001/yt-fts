@@ -50,11 +50,13 @@ def cli() -> None:
               help="Number of parallel download jobs (default: 8, recommended: 4-16 for most users)")
 @click.option("--cookies-from-browser", default=None,
               help="Browser to extract cookies from. Ex: chrome, firefox")
-def download(url: str, playlist: bool, language: str, jobs: int, cookies_from_browser: str | None) -> None:
+@click.option("--proxy", default=None, help="Proxy address to use for all network requests (e.g., http://127.0.0.1:8080)")
+def download(url: str, playlist: bool, language: str, jobs: int, cookies_from_browser: str | None, proxy: str | None) -> None:
     download_handler = DownloadHandler(
         number_of_jobs=jobs,
         language=language,
-        cookies_from_browser=cookies_from_browser
+        cookies_from_browser=cookies_from_browser,
+        proxy=proxy
     )
 
     if playlist:
@@ -84,12 +86,14 @@ def download(url: str, playlist: bool, language: str, jobs: int, cookies_from_br
               help="Browser to extract cookies from. Ex: chrome, firefox")
 @click.option("-j", "--jobs", type=int, default=8,
               help="Number of parallel download jobs to test with")
-def diagnose(test_url: str, cookies_from_browser: str | None, jobs: int) -> None:
+@click.option("--proxy", default=None, help="Proxy address to use for all network requests (e.g., http://127.0.0.1:8080)")
+def diagnose(test_url: str, cookies_from_browser: str | None, jobs: int, proxy: str | None) -> None:
     from .download.download_handler import DownloadHandler
     
     download_handler = DownloadHandler(
         number_of_jobs=jobs,
-        cookies_from_browser=cookies_from_browser
+        cookies_from_browser=cookies_from_browser,
+        proxy=proxy
     )
     
     download_handler.diagnose_403_errors(test_url)
@@ -139,11 +143,13 @@ def list(transcript: str | None, channel: str | None, library: bool) -> None:
 @click.option("--cookies-from-browser",
               default=None,
               help="Browser to extract cookies from. Ex: chrome, firefox")
-def update(channel: str | None, language: str, jobs: int, cookies_from_browser: str | None) -> None:
+@click.option("--proxy", default=None, help="Proxy address to use for all network requests (e.g., http://127.0.0.1:8080)")
+def update(channel: str | None, language: str, jobs: int, cookies_from_browser: str | None, proxy: str | None) -> None:
     update_handler = DownloadHandler(
         language=language,
         number_of_jobs=jobs,
-        cookies_from_browser=cookies_from_browser
+        cookies_from_browser=cookies_from_browser,
+        proxy=proxy
     )
 
     if channel is not None:
