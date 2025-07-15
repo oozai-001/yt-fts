@@ -320,7 +320,7 @@ class DownloadHandler:
                     'skip_unavailable_fragments': True,
                     'sleep_interval': 1,
                     'max_sleep_interval': 5,
-                    'sleep_interval_subtitles': 1
+                    'sleep_interval_subtitles': 1,
                     'retries': 3,
                     'proxy': self.proxy if self.proxy else None,
                 }
